@@ -1,9 +1,30 @@
 # TestData
+A collection of scripts and data for data-scrubbing or for generating test data.
 
-
-# Links
+## Based upon (and credits)
 Random Word Generation for Data Scrubbing  
 https://www.sqlservercentral.com/articles/random-word-generation-for-data-scrubbing
+
+## Examples  
+At the bottom of each SQL script there is an example of how to call random data.  
+
+### Words
+	1. ```SELECT dbo.ds_fnRandomWord() ```  for a single random word.
+	2. ```SELECT dbo.ds_fnRandomWords(10)``` for a sentence of up to 1000 characters, the number in the brackets is the number of words to generate.
+### First Names
+	1. ```SELECT dbo.ds_fnRandomFirstName() ```  for a single random word.
+	2. ```SELECT dbo.ds_fnRandomFirstNames(10)``` for a sentence of up to 1000 characters, the number in the brackets is the number of names to generate.
+
+### Last Names
+	1. ```SELECT dbo.ds_fnRandomLastName() ```  for a single random word.
+	2. ```SELECT dbo.ds_fnRandomLastNames(10)``` for a sentence of up to 1000 characters, the number in the brackets is the number of names to generate.
+
+### Phone numbers
+	1. ```SELECT dbo.ds_fnRandomPhoneNumber() ```  for a single random word.
+	2. ```SELECT dbo.ds_fnRandomPhoneNumbers(10)``` for a sentence of up to 1000 characters, the number in the brackets is the number of phone numbers to generate.
+
+
+
 
 
 

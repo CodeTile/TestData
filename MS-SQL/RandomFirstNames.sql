@@ -1,23 +1,23 @@
 /*********************************************************************************************************
     
-    Data scrubbing tools for PhoneNumbers
+    Data scrubbing tools for FirstNames
     https://www.sqlservercentral.com/articles/random-word-generation-for-data-scrubbing
 
 *********************************************************************************************************/
-if exists(Select * from sys.tables where [name] ='DataScrubbingPhoneNumbers')
+if exists(Select * from sys.tables where [name] ='DataScrubbingFirstNames')
 BEGIN
-	print'DROP TABLE [dbo].[DataScrubbingPhoneNumbers]';
-    DROP TABLE [dbo].[DataScrubbingPhoneNumbers];
+	print'DROP TABLE [dbo].[DataScrubbingFirstNames]';
+    DROP TABLE [dbo].[DataScrubbingFirstNames];
 END
 GO
-    print'CREATE TABLE [dbo].[DataScrubbingPhoneNumbers]';
-    CREATE TABLE [dbo].[DataScrubbingPhoneNumbers](
-    [PhoneNumber] [varchar](50) COLLATE SQL_Latin1_General_Cp1_CS_AS NOT NULL ,
+    print'CREATE TABLE [dbo].[DataScrubbingFirstNames]';
+    CREATE TABLE [dbo].[DataScrubbingFirstNames](
+    [FirstName] [varchar](50) COLLATE SQL_Latin1_General_Cp1_CS_AS NOT NULL ,
 	[gender]	[varchar](10) Not NULL,
-    [PhoneNumberID] [int] IDENTITY(1,1) NOT NULL,
-    CONSTRAINT [PK_DataScrubbingPhoneNumbers] PRIMARY KEY CLUSTERED 
+    [FirstNameID] [int] IDENTITY(1,1) NOT NULL,
+    CONSTRAINT [PK_DataScrubbingFirstNames] PRIMARY KEY CLUSTERED 
     (
-    [PhoneNumber] ASC 
+    [FirstName] ASC 
     )
     WITH 
     (
@@ -29,13 +29,13 @@ GO
     ) ON [PRIMARY]
     ) ON [PRIMARY]
     ;
-    CREATE NONCLUSTERED INDEX [IX_PhoneNumberS_PhoneNumberID] ON [dbo].[DataScrubbingPhoneNumbers]
+    CREATE NONCLUSTERED INDEX [IX_FirstNameS_FirstNameID] ON [dbo].[DataScrubbingFirstNames]
     (
-    [PhoneNumberID] ASC
+    [FirstNameID] ASC
     )
     INCLUDE 
     ( 
-    [PhoneNumber]
+    [FirstName]
     ) 
     WITH 
     (
@@ -70,17 +70,17 @@ GO
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF  EXISTS (SELECT *
            FROM   sys.objects
-           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomPhoneNumberBetween]')
+           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomFirstNameBetween]')
                   AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
 
 BEGIN
-	 print'DROP FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween]';
-	  DROP FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween];
+	 print'DROP FUNCTION [dbo].[ds_fnRandomFirstNameBetween]';
+	  DROP FUNCTION [dbo].[ds_fnRandomFirstNameBetween];
 END
 GO
-    print'  CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween]';
+    print'  CREATE FUNCTION [dbo].[ds_fnRandomFirstNameBetween]';
     EXEC('
-CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween](@LowerBound INT, @UpperBound INT)
+CREATE FUNCTION [dbo].[ds_fnRandomFirstNameBetween](@LowerBound INT, @UpperBound INT)
 RETURNS INT
 AS
 BEGIN
@@ -94,18 +94,18 @@ END
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF EXISTS (SELECT *
            FROM   sys.objects
-           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomPhoneNumber]')
+           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomFirstName]')
                   AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
 BEGIN
-    print'DROP FUNCTION [dbo].[ds_fnRandomPhoneNumber]';
-    DROP FUNCTION [dbo].[ds_fnRandomPhoneNumber]
+    print'DROP FUNCTION [dbo].[ds_fnRandomFirstName]';
+    DROP FUNCTION [dbo].[ds_fnRandomFirstName]
 END
 GO
-    print'  CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumber]';
+    print'  CREATE FUNCTION [dbo].[ds_fnRandomFirstName]';
     GO
 
 	exec('
-CREATE Function [dbo].[ds_fnRandomPhoneNumber]()
+CREATE Function [dbo].[ds_fnRandomFirstName]()
 returns VARCHAR(255)
 as
 BEGIN
@@ -113,10 +113,10 @@ return
 (
     select 
 top 1 
-    UPPER(LEFT(PhoneNumber,1)) +
-LOWER(SUBSTRING(PhoneNumber,2,LEN(PhoneNumber))) as PhoneNumber 
-from [DataScrubbingPhoneNumbers] 
-where PhoneNumberId = dbo.ds_fnRandomPhoneNumberBetween(1,(select max(PhoneNumberid) from [DataScrubbingPhoneNumbers]))
+    UPPER(LEFT(FirstName,1)) +
+LOWER(SUBSTRING(FirstName,2,LEN(FirstName))) as FirstName 
+from [DataScrubbingFirstNames] 
+where FirstNameId = dbo.ds_fnRandomFirstNameBetween(1,(select max(FirstNameid) from [DataScrubbingFirstNames]))
 )
 END;
 ');
@@ -127,25 +127,25 @@ GO
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF EXISTS (SELECT *
            FROM   sys.objects
-           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomPhoneNumbers]')
+           WHERE  object_id = OBJECT_ID(N'[dbo].[ds_fnRandomFirstNames]')
                   AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
 BEGIN
-	Print'DROP FUNCTION [dbo].[ds_fnRandomPhoneNumbers]';
-    DROP FUNCTION [dbo].[ds_fnRandomPhoneNumbers]
+	Print'DROP FUNCTION [dbo].[ds_fnRandomFirstNames]';
+    DROP FUNCTION [dbo].[ds_fnRandomFirstNames]
 END
 GO
-print' CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumbers]';
+print' CREATE FUNCTION [dbo].[ds_fnRandomFirstNames]';
 GO
-CREATE Function [dbo].[ds_fnRandomPhoneNumbers](@PhoneNumbersRequired int)
+CREATE Function [dbo].[ds_fnRandomFirstNames](@FirstNamesRequired int)
 returns VARCHAR(255)
 as
 BEGIN
     Declare @result nvarchar(4000) =''
     DECLARE @counter INT SET @counter = 0 
 		
-    WHILE @counter < @PhoneNumbersRequired
+    WHILE @counter < @FirstNamesRequired
     BEGIN 
-       set @result= @result+' ' + dbo.ds_fnRandomPhoneNumber()
+       set @result= @result+' ' + dbo.ds_fnRandomFirstName()
        SET @counter = @counter + 1
        if(@counter %14 =0)
              set @result= @result+'. '
@@ -154,15 +154,15 @@ return
 (
 	
 
-select ltrim(rTrim(@result)) as [PhoneNumbers]
+select ltrim(rTrim(@result)) as [FirstNames]
 )
 END;
    
 
 GO
 
-Truncate Table [DataScrubbingPhoneNumbers];
-Insert into [DataScrubbingPhoneNumbers](PhoneNumber, Gender)
+Truncate Table [DataScrubbingFirstNames];
+Insert into [DataScrubbingFirstNames](FirstName, Gender)
 		  SELECT 'Aidan', 'male'
 UNION ALL SELECT 'Alba', 'female'
 UNION ALL SELECT 'Albert', 'female'
@@ -352,9 +352,9 @@ UNION ALL SELECT 'Zayne', 'male'
                   GO
 
 select
-    dbo.ds_fnRandomPhoneNumber() as [PhoneNumber]
-    ,dbo.ds_fnRandomPhoneNumbers(10) as [Sentence]
-    ,dbo.ds_fnRandomPhoneNumber() + dbo.ds_fnRandomPhoneNumber() +'@' + dbo.ds_fnRandomPhoneNumber() +'.nothing' as [Email Address]
+    dbo.ds_fnRandomFirstName() as [FirstName]
+    ,dbo.ds_fnRandomFirstNames(10) as [Sentence]
+    ,dbo.ds_fnRandomFirstName() + dbo.ds_fnRandomFirstName() +'@' + dbo.ds_fnRandomFirstName() +'.nothing' as [Email Address]
 from master..sysobjects
 
 GO
