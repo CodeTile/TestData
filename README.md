@@ -1,5 +1,5 @@
 # TestData
-A collection of scripts and data for data-scrubbing or for generating test data.
+A collection of TSQL scripts and data for data-scrubbing or for generating test data.
 
 ## Based upon (and credits)
 Random Word Generation for Data Scrubbing  
