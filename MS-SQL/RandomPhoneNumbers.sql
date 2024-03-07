@@ -65,11 +65,11 @@ END
 
 GO
     print'  CREATE VIEW [dbo].[ds_vwGetRandom]';
-    EXEC('
+   GO
 CREATE VIEW [dbo].[ds_vwGetRandom]
 AS
 SELECT RAND() AS MyRAND
-')   ;
+ ;
 GO
 
 
@@ -85,7 +85,7 @@ BEGIN
 END
 GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween]';
-    EXEC('
+    GO
 CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumberBetween](@LowerBound INT, @UpperBound INT)
 RETURNS INT
 AS
@@ -94,7 +94,8 @@ BEGIN
     SELECT @TMP = (SELECT MyRAND FROM ds_vwGetRandom);
     RETURN CAST(@TMP* (@UpperBound - @LowerBound) + @LowerBound AS INT);
 END
-   ')   ;
+;
+GO
 
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,6 @@ GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomPhoneNumber]';
     GO
 
-	exec('
 CREATE Function [dbo].[ds_fnRandomPhoneNumber]()
 returns VARCHAR(255)
 as
@@ -125,7 +125,7 @@ from [DataScrubbingPhoneNumbers]
 where PhoneNumberId = dbo.ds_fnRandomPhoneNumberBetween(1,(select max(PhoneNumberid) from [DataScrubbingPhoneNumbers]))
 )
 END;
-');
+GO
 GO
 GO
 
@@ -476,10 +476,10 @@ UNION ALL SELECT '013179461470', 'Edinburgh', 'UK', '44'
 UNION ALL SELECT '013179461485', 'Edinburgh', 'UK', '44'
                   GO
 
-select
-    dbo.ds_fnRandomPhoneNumber() as [PhoneNumber]
+select top 10
+    dbo.ds_fnRandomPhoneNumbers(1) as [PhoneNumber]
     ,dbo.ds_fnRandomPhoneNumbers(10) as [Sentence]
-    ,dbo.ds_fnRandomPhoneNumber() + dbo.ds_fnRandomPhoneNumber() +'@' + dbo.ds_fnRandomPhoneNumber() +'.nothing' as [Email Address]
+    ,dbo.ds_fnRandomPhoneNumbers(2) +'@' + dbo.ds_fnRandomPhoneNumbers(1) +'.nothing' as [Email Address]
 from master..sysobjects
 
 GO

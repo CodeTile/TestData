@@ -58,11 +58,11 @@ END
 
 GO
     print'  CREATE VIEW [dbo].[ds_vwGetRandom]';
-    EXEC('
+GO    
 CREATE VIEW [dbo].[ds_vwGetRandom]
 AS
 SELECT RAND() AS MyRAND
-')   ;
+ ;
 GO
 
 
@@ -78,7 +78,7 @@ BEGIN
 END
 GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomWordBetween]';
-    EXEC('
+   go
 CREATE FUNCTION [dbo].[ds_fnRandomWordBetween](@LowerBound INT, @UpperBound INT)
 RETURNS INT
 AS
@@ -86,9 +86,8 @@ BEGIN
     DECLARE @TMP FLOAT;
     SELECT @TMP = (SELECT MyRAND FROM ds_vwGetRandom);
     RETURN CAST(@TMP* (@UpperBound - @LowerBound) + @LowerBound AS INT);
-END
-   ')   ;
-
+END    ;
+GO
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF EXISTS (SELECT *
@@ -102,7 +101,7 @@ END
 GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomWord]';
     GO
-	exec('
+	GO
 CREATE Function [dbo].[ds_fnRandomWord]()
 returns VARCHAR(255)
 as
@@ -117,10 +116,10 @@ from [DataScrubbingWords]
 where WordId = dbo.ds_fnRandomWordBetween(1,(select max(wordid) from [DataScrubbingWords]))
 )
 END;
-');
-GO
 GO
 
+GO
+go
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF EXISTS (SELECT *
@@ -3221,11 +3220,15 @@ UNION ALL SELECT 'youth'
 UNION ALL SELECT 'Zealous'
 GO
 
-select
-    dbo.ds_fnRandomWord() as [Word]
+select top 10
+    dbo.ds_fnRandomWords(1) as [Word]
     ,dbo.ds_fnRandomWords(10) as [Sentence]
-    ,dbo.ds_fnRandomWord() + dbo.ds_fnRandomWord() +'@' + dbo.ds_fnRandomWord() +'.nothing' as [Email Address]
-from master..sysobjects
+    ,replace(dbo.ds_fnRandomWords(2),' ', '.') +'@' + dbo.ds_fnRandomWords(1) +'.nothing' as [Email Address]
+from master..sysobjects 
+
+GO
+
+
 
 GO
 

@@ -59,11 +59,10 @@ END
 
 GO
     print'  CREATE VIEW [dbo].[ds_vwGetRandom]';
-    EXEC('
+    GO
 CREATE VIEW [dbo].[ds_vwGetRandom]
 AS
-SELECT RAND() AS MyRAND
-')   ;
+SELECT RAND() AS MyRAND ;
 GO
 
 
@@ -79,7 +78,7 @@ BEGIN
 END
 GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomFirstNameBetween]';
-    EXEC('
+   GO
 CREATE FUNCTION [dbo].[ds_fnRandomFirstNameBetween](@LowerBound INT, @UpperBound INT)
 RETURNS INT
 AS
@@ -87,9 +86,8 @@ BEGIN
     DECLARE @TMP FLOAT;
     SELECT @TMP = (SELECT MyRAND FROM ds_vwGetRandom);
     RETURN CAST(@TMP* (@UpperBound - @LowerBound) + @LowerBound AS INT);
-END
-   ')   ;
-
+END;
+GO
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 IF EXISTS (SELECT *
@@ -103,8 +101,6 @@ END
 GO
     print'  CREATE FUNCTION [dbo].[ds_fnRandomFirstName]';
     GO
-
-	exec('
 CREATE Function [dbo].[ds_fnRandomFirstName]()
 returns VARCHAR(255)
 as
@@ -119,7 +115,6 @@ from [DataScrubbingFirstNames]
 where FirstNameId = dbo.ds_fnRandomFirstNameBetween(1,(select max(FirstNameid) from [DataScrubbingFirstNames]))
 )
 END;
-');
 GO
 GO
 
@@ -351,10 +346,10 @@ UNION ALL SELECT 'Zavier', 'male'
 UNION ALL SELECT 'Zayne', 'male'
                   GO
 
-select
-    dbo.ds_fnRandomFirstName() as [FirstName]
+select TOP 10
+    dbo.ds_fnRandomFirstNames(1) as [FirstName]
     ,dbo.ds_fnRandomFirstNames(10) as [Sentence]
-    ,dbo.ds_fnRandomFirstName() + dbo.ds_fnRandomFirstName() +'@' + dbo.ds_fnRandomFirstName() +'.nothing' as [Email Address]
+    ,REPLACE(dbo.ds_fnRandomFirstNames(2),' ','.') +'@' + dbo.ds_fnRandomFirstNames(1) +'.nothing' as [Email Address]
 from master..sysobjects
 
 GO
